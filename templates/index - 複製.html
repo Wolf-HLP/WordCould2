@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Word Cloud Generator</title>
+    <script>
+        function updateImage() {
+            var imageFile = document.getElementById("image_file").value;
+            var imagePath = "../static/images/" + imageFile;
+            document.getElementById("image_display").src = imagePath;
+        }
+
+        function handleFileUpload(event) {
+            event.preventDefault();
+            var formData = new FormData(document.getElementById("uploadForm"));
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("image_file").value = data.filename;
+                    updateImage();
+                } else {
+                    alert('File upload failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('File upload failed');
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Web Word Cloud Generator</h1>
+    <form action="/" method="post">
+        <label for="urls">Enter URL(s) (one per line):</label><br>
+        <textarea id="urls" name="urls" rows="2" cols="100"></textarea><br>
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" value="Cut_POS_NER"><br>
+        <label for="image_file">Image File:</label>
+        <input type="text" id="image_file" name="image_file" value="propose_marriage.png" oninput="updateImage()"><br>
+        <label for="stop_words">Stop Words:</label>
+        <input type="text" id="stop_words" name="stop_words" value="be is are"><br>
+        <label for="pos_feats">POS Features:</label>
+        <input type="text" id="pos_feats" name="pos_feats" value="all"><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Upload New Image</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="file_upload">Choose Image:</label>
+        <input type="file" id="file_upload" name="file_upload"><br>
+        <button type="submit" onclick="handleFileUpload(event)">Upload</button>
+    </form>
+
+    <div>
+        <img id="image_display" src="../static/images/propose_marriage.png" alt="Image Preview" style="width: 50px; height: 50px;">
+    </div>
+
+    <div>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Word Cloud Generator (NCYU DFL 語言認知科技實驗室)</title>
+    <style>
+        /* Style to center align content */
+        body {
+            text-align: center;
+        }
+    </style>
+    <script>
+        function updateImage() {
+            var imageFile = document.getElementById("image_file").value;
+            var imagePath = "../static/images/" + imageFile;
+            document.getElementById("image_display").src = imagePath;
+        }
+
+        function handleFileUpload(event) {
+            event.preventDefault();
+            var formData = new FormData(document.getElementById("uploadForm"));
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("image_file").value = data.filename;
+                    updateImage();
+                } else {
+                    alert('File upload failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('File upload failed');
+            });
+        }
+    </script>
+   <style>
+    /* Custom styles for the button */
+    .custom-button {
+        width: 300px;
+        height: 50px;
+        background-color: rgb(0, 4, 255);
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    /* Change button color on hover */
+    .custom-button:hover {
+        background-color: darkred;
+    }
+</style>
+</head>
+<body>
+    
+    <style>
+        /* Style to move the uploadForm to the right */
+        #uploadForm {
+            position: absolute;
+            top: 220px; /* Adjust as needed */
+            left: 280px; /* Adjust the distance from the left */
+            margin-left: 50px;
+        }
+    </style>
+   <style>
+    .form-container {
+        display: flex;
+        align-items: center;
+        text-align: left;
+    }
+</style>
+
+    <h1>Web Word Cloud Generator<br> (NCYU DFL 語言認知科技實驗室)</h1>
+ <div class="form-container">  
+    <form action="/" method="post" target="_blank">
+        <label for="urls">Enter URL(s) (one per line):</label><br>
+        <textarea id="urls" name="urls" rows="2" cols="100"></textarea><br>
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" value="Cut_POS_NER" style="margin-left: 30px;"><br>
+        <label for="image_file">Image File:</label>
+        <input type="text" id="image_file" name="image_file" value="propose_marriage.png" oninput="updateImage()" style="margin-left: 20px;"><br><br>
+      
+        <label for="stop_words">Stop Words:</label>
+        <input type="text" id="stop_words" name="stop_words" value="be is are" style="margin-left: 15px;"><br>
+        <label for="pos_feats">POS Features:</label>
+        <input type="text" id="pos_feats" name="pos_feats" value="all"><br><br>
+        <button type="submit" class="custom-button">Submit</button>
+    </form>
+</div>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <label for="file_upload">Choose Image:</label>
+        <input type="file" id="file_upload" name="file_upload"><br><br>
+        
+        <div style="margin-left: -100px;">
+            <button type="submit" onclick="handleFileUpload(event)">Upload</button><br>
+            <img id="image_display" src="../static/images/propose_marriage.png" alt="Image Preview" style="width: 100px; height: 100px;">
+
+            
+        </div>
+    </form><br>
+
+   
+
+    <div>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

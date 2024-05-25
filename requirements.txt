@@ -1,0 +1,9 @@
+flask
+nltk
+spacy
+requests
+beautifulsoup4
+numpy
+Pillow
+wordcloud
+tqdm
